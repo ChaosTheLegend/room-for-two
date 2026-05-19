@@ -54,7 +54,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'MultiLoader-Template'
+rootProject.name = 'room-for-two'
 include('common')
 include('fabric')
 include('neoforge')

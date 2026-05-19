@@ -8,34 +8,31 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "",
-        "sources": "",
-        "issues": ""
+        "homepage": "https://modrinth.com/mod/room-for-two",
+        "sources": "https://github.com/Sir-Cow/room-for-two",
+        "issues": "https://github.com/Sir-Cow/room-for-two/issues"
     },
     "license": "${license}",
     "icon": "icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "com.example.examplemod.ExampleMod"
+            "sircow.roomfortwo.RoomForTwo"
         ]
     },
     "mixins": [
-        "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "roomfortwo.mixins.json",
+        "roomfortwo.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=${fabric_loader_version}",
+        "fabricloader": ">=0.19.0",
         "fabric-api": "*",
         "minecraft": "~26.1",
         "java": ">=${java_version}"
     },
-    "suggests": {
-        "another-mod": "*"
-    },
     "custom": {
         "modmenu": {
-            "update_checker": false
+            "update_checker": true
         }
     }
 }
