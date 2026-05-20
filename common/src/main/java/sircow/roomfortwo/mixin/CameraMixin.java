@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Final;
@@ -26,42 +25,40 @@ public abstract class CameraMixin {
     @Shadow protected abstract void move(float forwards, float up, float right);
 
     @Inject(method = "alignWithEntity", at = @At("TAIL"))
-    private void applySleepCameraRotationAndTranslation(float partialTicks, CallbackInfo ci) {
-        if (this.entity instanceof LivingEntity livingEntity && livingEntity.isSleeping()) {
-            if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
+    private void roomfortwo$adjustSleepCamera(float partialTicks, CallbackInfo ci) {
+        if (!(this.entity instanceof LivingEntity livingEntity)) return;
+        if (!livingEntity.isSleeping()) return;
+        if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
 
-            ClientLevel level = Minecraft.getInstance().level;
-            if (level == null) return;
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) return;
 
-            double x = livingEntity.getX();
-            double y = livingEntity.getY();
-            double z = livingEntity.getZ();
+        AABB bedArea = new AABB(
+                livingEntity.getX() - 1.5, livingEntity.getY() - 1.0, livingEntity.getZ() - 1.5,
+                livingEntity.getX() + 1.5, livingEntity.getY() + 1.0, livingEntity.getZ() + 1.5
+        );
 
-            AABB bedArea = new AABB(x - 1.5, y - 1.0, z - 1.5, x + 1.5, y + 1.0, z + 1.5);
-            List<LivingEntity> occupants = level.getEntitiesOfClass(LivingEntity.class, bedArea, LivingEntity::isSleeping);
-            occupants.sort(Comparator.comparingInt(LivingEntity::getId));
+        List<LivingEntity> occupants = level.getEntitiesOfClass(LivingEntity.class, bedArea, LivingEntity::isSleeping);
+        occupants.sort(Comparator.comparingInt(LivingEntity::getId));
 
-            int index = 0;
-            for (int i = 0; i < occupants.size(); i++) {
-                if (occupants.get(i).getId() == livingEntity.getId()) {
-                    index = i;
-                    break;
-                }
+        int index = 0;
+        for (int i = 0; i < occupants.size(); i++) {
+            if (occupants.get(i).getId() == livingEntity.getId()) {
+                index = i;
+                break;
             }
+        }
 
-            boolean hasVillager = occupants.stream().anyMatch(e -> e instanceof Villager);
-
-            if (index > 0 || hasVillager) {
-                this.rotation.rotateZ((float) Math.toRadians(90.0));
-                this.rotation.rotateX((float) Math.toRadians(90.0));
-                this.move(-0.75F, 0.1F, 0.0F);
-            }
-            else {
-                this.rotation.rotateY((float) Math.toRadians(180.0));
-                this.rotation.rotateZ((float) Math.toRadians(-90.0));
-                this.rotation.rotateX((float) Math.toRadians(-90.0));
-                this.move(-0.75F, 0.1F, 0.0F);
-            }
+        if ((index & 1) == 0) {
+            rotation.rotateY((float) Math.toRadians(180.0));
+            rotation.rotateZ((float) Math.toRadians(-90.0));
+            rotation.rotateX((float) Math.toRadians(-90.0));
+            move(-0.75F, 0.1F, 0.0F);
+        }
+        else {
+            rotation.rotateZ((float) Math.toRadians(90.0));
+            rotation.rotateX((float) Math.toRadians(90.0));
+            move(-0.75F, 0.1F, 0.0F);
         }
     }
 }

@@ -17,28 +17,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BedBlock.class)
 public class BedBlockMixin {
     @Inject(method = "useWithoutItem", at = @At("HEAD"), cancellable = true)
-    private void allowInfiniteBedSharing(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
+    private void roomfortwo$use(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (level.isClientSide()) {
             cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
             return;
         }
 
-        if (state.getValue(BlockStateProperties.BED_PART) != BedPart.HEAD) {
-            pos = pos.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING));
-            state = level.getBlockState(pos);
-            if (!state.is((BedBlock) (Object) this)) {
+        BlockPos bedPos = pos;
+        BlockState bedState = state;
+
+        if (bedState.getValue(BlockStateProperties.BED_PART) != BedPart.HEAD) {
+            bedPos = bedPos.relative(bedState.getValue(BlockStateProperties.HORIZONTAL_FACING));
+            bedState = level.getBlockState(bedPos);
+
+            if (!bedState.is((BedBlock) (Object) this)) {
                 cir.setReturnValue(InteractionResult.CONSUME);
                 return;
             }
         }
 
-        player.startSleepInBed(pos).ifLeft(problem -> {
+        player.startSleepInBed(bedPos).ifLeft(problem -> {
             if (problem.message() != null) player.sendOverlayMessage(problem.message());
         });
-
-        if (state.getValue(BlockStateProperties.OCCUPIED)) {
-            level.setBlock(pos, state.setValue(BlockStateProperties.OCCUPIED, false), 3);
-        }
 
         cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
     }
