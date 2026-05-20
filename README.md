@@ -1,6 +1,9 @@
 # 💤 Room for Two
 Adds the ability for multiple players to sleep in a bed.
 
+## 🖥️ Download
+[Modrinth](https://modrinth.com/mod/room-for-two) | [Curseforge](https://www.curseforge.com/minecraft/mc-mods/room-for-two)
+
 ## Roadmap
 ### Planned Features
 These are subject to change and I'm open for any feedback (Open a github issue or DM me on Twitter). The goal I want for this mod is to keep it fairly simplistic, this means no new blocks or items.
