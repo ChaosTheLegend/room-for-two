@@ -5,8 +5,6 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.AABB;
@@ -21,16 +19,15 @@ import java.util.List;
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin {
     @Inject(method = "setupRotations", at = @At("TAIL"))
-    private void roomfortwo$rotateSleepingEntities(LivingEntityRenderState state, PoseStack poseStack, float bodyRot, float entityScale, CallbackInfo ci) {
-        if (!state.hasPose(Pose.SLEEPING)) return;
-        if (!(state instanceof AvatarRenderState avatarState)) return;
+    private void roomfortwo$rotateSleepingEntities(LivingEntity livingEntity, PoseStack poseStack, float animationProgress, float bodyYaw, float tickDelta, float scale, CallbackInfo ci) {
+        if (!livingEntity.hasPose(Pose.SLEEPING)) return;
 
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
 
         AABB bedArea = new AABB(
-                state.x - 1.5, state.y - 1.0, state.z - 1.5,
-                state.x + 1.5, state.y + 1.0, state.z + 1.5
+                livingEntity.getX() - 1.5, livingEntity.getY() - 1.0, livingEntity.getZ() - 1.5,
+                livingEntity.getX() + 1.5, livingEntity.getY() + 1.0, livingEntity.getZ() + 1.5
         );
 
         List<LivingEntity> occupants = level.getEntitiesOfClass(LivingEntity.class, bedArea, LivingEntity::isSleeping);
@@ -38,7 +35,7 @@ public class LivingEntityRendererMixin {
 
         int index = 0;
         for (int i = 0; i < occupants.size(); i++) {
-            if (occupants.get(i).getId() == avatarState.id) {
+            if (occupants.get(i).getId() == livingEntity.getId()) {
                 index = i;
                 break;
             }

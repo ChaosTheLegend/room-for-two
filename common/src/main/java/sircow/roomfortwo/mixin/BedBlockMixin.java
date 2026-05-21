@@ -19,7 +19,7 @@ public class BedBlockMixin {
     @Inject(method = "useWithoutItem", at = @At("HEAD"), cancellable = true)
     private void roomfortwo$use(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> cir) {
         if (level.isClientSide()) {
-            cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
+            cir.setReturnValue(InteractionResult.CONSUME);
             return;
         }
 
@@ -27,7 +27,7 @@ public class BedBlockMixin {
         BlockState bedState = state;
 
         if (bedState.getValue(BlockStateProperties.BED_PART) != BedPart.HEAD) {
-            bedPos = bedPos.relative(bedState.getValue(BlockStateProperties.HORIZONTAL_FACING));
+            bedPos = bedPos.relative(bedState.getValue(BedBlock.FACING));
             bedState = level.getBlockState(bedPos);
 
             if (!bedState.is((BedBlock) (Object) this)) {
@@ -37,9 +37,9 @@ public class BedBlockMixin {
         }
 
         player.startSleepInBed(bedPos).ifLeft(problem -> {
-            if (problem.message() != null) player.sendOverlayMessage(problem.message());
+            if (problem.getMessage() != null) player.displayClientMessage(problem.getMessage(), true);
         });
 
-        cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
+        cir.setReturnValue(InteractionResult.SUCCESS);
     }
 }
