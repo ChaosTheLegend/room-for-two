@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import sircow.roomfortwo.platform.Services;
 
 import java.util.Comparator;
 import java.util.List;
-
-// TODO: Currently doesn't rotate the camera in Forge, no Forge release until this is fixed
+import java.util.Objects;
 
 @Mixin(Camera.class)
 public abstract class CameraMixin {
@@ -28,7 +28,8 @@ public abstract class CameraMixin {
     @Shadow protected abstract void move(float forwards, float up, float right);
 
     @Inject(method = "setup", at = @At("TAIL"))
-    private void roomfortwo$adjustSleepCamera(BlockGetter blockGetter, Entity entity, boolean detached, boolean inverseView, float partialTick, CallbackInfo ci)  {
+    private void roomfortwo$adjustSleepCamera(BlockGetter blockGetter, Entity entity, boolean detached, boolean inverseView, float partialTick, CallbackInfo ci) {
+        if (Objects.equals(Services.PLATFORM.getPlatformName(), "Forge")) return;
         if (!(this.entity instanceof LivingEntity livingEntity)) return;
         if (!livingEntity.isSleeping()) return;
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
