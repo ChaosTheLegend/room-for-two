@@ -1,20 +1,18 @@
 plugins {
     id 'multiloader-common'
-    id 'net.neoforged.moddev'
+    id 'org.spongepowered.gradle.vanilla' version '0.2.2-SNAPSHOT'
 }
 
-neoForge {
-    neoFormVersion = neo_form_version
-    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
+minecraft {
+    version(minecraft_version)
+    def aw = file("src/main/resources/${mod_id}.accesswidener")
+    if(aw.exists()){
+        accessWideners(aw)
     }
 }
 
 dependencies {
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.7'
-    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.5.4'
-    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.5.4'
 }
 
 configurations {
