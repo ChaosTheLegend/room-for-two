@@ -19,7 +19,7 @@ import java.util.List;
 @Mixin(LivingEntityRenderer.class)
 public class LivingEntityRendererMixin {
     @Inject(method = "setupRotations", at = @At("TAIL"))
-    private void roomfortwo$rotateSleepingEntities(LivingEntity livingEntity, PoseStack poseStack, float animationProgress, float bodyYaw, float tickDelta, float scale, CallbackInfo ci) {
+    private void roomfortwo$rotateSleepingEntities(LivingEntity livingEntity, PoseStack poseStack, float animationProgress, float bodyYaw, float tickDelta, CallbackInfo ci) {
         if (!livingEntity.hasPose(Pose.SLEEPING)) return;
 
         ClientLevel level = Minecraft.getInstance().level;

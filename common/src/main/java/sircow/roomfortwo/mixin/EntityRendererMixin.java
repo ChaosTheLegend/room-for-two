@@ -32,7 +32,7 @@ public class EntityRendererMixin {
     }
 
     @Inject(method = "renderNameTag", at = @At("HEAD"), cancellable = true)
-    private void roomfortwo$removeOtherPlayerNametagsWhileSleeping(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, float partialTick, CallbackInfo ci) {
+    private void roomfortwo$removeOtherPlayerNametagsWhileSleeping(Entity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, CallbackInfo ci) {
         if (!(entity instanceof Player)) return;
         if (!entity.hasPose(Pose.SLEEPING)) return;
 
