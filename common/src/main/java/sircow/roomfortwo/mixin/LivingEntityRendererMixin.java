@@ -1,7 +1,7 @@
 package sircow.roomfortwo.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -20,7 +20,7 @@ import java.util.List;
 public class LivingEntityRendererMixin {
     @Inject(method = "setupRotations", at = @At("TAIL"))
     private void roomfortwo$rotateSleepingEntities(LivingEntity livingEntity, PoseStack poseStack, float animationProgress, float bodyYaw, float tickDelta, CallbackInfo ci) {
-        if (!livingEntity.hasPose(Pose.SLEEPING)) return;
+        if (livingEntity.getPose() != Pose.SLEEPING) return;
 
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -43,11 +43,11 @@ public class LivingEntityRendererMixin {
 
         if ((index & 1) == 0) {
             poseStack.translate(-0.25F, 0.0F, -0.15F);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         }
         else {
             poseStack.translate(0.25F, 0.0F, -0.15F);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
         }
     }
 }

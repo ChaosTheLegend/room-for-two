@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -23,7 +23,7 @@ public class ClientViewportHandler {
     );
 
     @SubscribeEvent
-    public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
+    public static void onComputeCameraAngles(EntityViewRenderEvent.CameraSetup event) {
         Camera camera = event.getCamera();
 
         Minecraft minecraft = Minecraft.getInstance();
