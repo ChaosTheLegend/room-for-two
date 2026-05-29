@@ -23,10 +23,8 @@ public class EntityRendererMixin {
         if (entity instanceof Player && entity.getPose() == Pose.SLEEPING) {
             LocalPlayer localPlayer = Minecraft.getInstance().player;
 
-            if (localPlayer != null && entity.getId() == localPlayer.getId()) {
-                if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-                    cir.setReturnValue(false);
-                }
+            if (localPlayer != null && entity.getId() == localPlayer.getId() && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+                cir.setReturnValue(false);
             }
         }
     }
