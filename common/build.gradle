@@ -1,10 +1,10 @@
 plugins {
     id 'multiloader-common'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.2-SNAPSHOT'
+    id 'net.neoforged.moddev.legacyforge'
 }
 
-minecraft {
-    version(minecraft_version)
+legacyForge {
+    mcpVersion = minecraft_version
     def aw = file("src/main/resources/${mod_id}.accesswidener")
     if(aw.exists()){
         accessWideners(aw)

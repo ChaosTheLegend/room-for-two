@@ -1,17 +1,11 @@
 package sircow.roomfortwo.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import sircow.roomfortwo.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public record BedOccupancySyncPayload(Map<Integer, Integer> entitySlots) implements CustomPacketPayload {
-    public static final ResourceLocation ID = Constants.id("bed_occupancy_sync");
-
+public record BedOccupancySyncPayload(Map<Integer, Integer> entitySlots) {
     public BedOccupancySyncPayload(FriendlyByteBuf buf) {
         this(readMap(buf));
     }
@@ -26,7 +20,6 @@ public record BedOccupancySyncPayload(Map<Integer, Integer> entitySlots) impleme
         return map;
     }
 
-    @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeVarInt(this.entitySlots.size());
 
@@ -34,10 +27,5 @@ public record BedOccupancySyncPayload(Map<Integer, Integer> entitySlots) impleme
             buf.writeVarInt(entityId);
             buf.writeVarInt(slot);
         });
-    }
-
-    @Override
-    public @NotNull ResourceLocation id() {
-        return ID;
     }
 }
