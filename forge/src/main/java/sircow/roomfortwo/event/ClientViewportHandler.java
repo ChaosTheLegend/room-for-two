@@ -2,19 +2,16 @@ package sircow.roomfortwo.event;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import sircow.roomfortwo.util.BedOccupancyTracker;
 
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = "roomfortwo", value = Dist.CLIENT)
 public class ClientViewportHandler {
@@ -26,31 +23,9 @@ public class ClientViewportHandler {
     public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
         Camera camera = event.getCamera();
 
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player == null) return;
-
-        LivingEntity livingEntity = minecraft.player;
+        if (!(camera.getEntity() instanceof LivingEntity livingEntity)) return;
         if (!livingEntity.isSleeping()) return;
-        if (!minecraft.options.getCameraType().isFirstPerson()) return;
-
-        ClientLevel level = minecraft.level;
-        if (level == null) return;
-
-        AABB bedArea = new AABB(
-                livingEntity.getX() - 1.5, livingEntity.getY() - 1.0, livingEntity.getZ() - 1.5,
-                livingEntity.getX() + 1.5, livingEntity.getY() + 1.0, livingEntity.getZ() + 1.5
-        );
-
-        List<LivingEntity> occupants = level.getEntitiesOfClass(LivingEntity.class, bedArea, LivingEntity::isSleeping);
-        occupants.sort(Comparator.comparingInt(LivingEntity::getId));
-
-        int index = 0;
-        for (int i = 0; i < occupants.size(); i++) {
-            if (occupants.get(i).getId() == livingEntity.getId()) {
-                index = i;
-                break;
-            }
-        }
+        if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
 
         Direction direction = livingEntity.getBedOrientation();
         if (direction == null) return;
@@ -65,7 +40,9 @@ public class ClientViewportHandler {
         yRotateL = -wrapYaw(yRotateR);
         zRotateL = -zRotateR;
 
-        if ((index & 1) == 0) {
+        int slot = BedOccupancyTracker.getSlot(livingEntity.getId());
+
+        if (slot % 2 == 0) {
             targetPitch = xRotateR;
             targetYaw = baseYaw + yRotateR;
             targetRoll = zRotateR;
