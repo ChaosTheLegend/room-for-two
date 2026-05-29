@@ -2,6 +2,7 @@ package sircow.roomfortwo.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import sircow.roomfortwo.util.BedOccupancyTracker;
 
 import java.util.Comparator;
 import java.util.List;
@@ -38,12 +40,12 @@ public class LivingEntityRendererMixin {
         boolean localPlayer = livingEntity == minecraft.player;
 
         if (firstPerson && localPlayer) {
-            if (slot % 2 == 0) poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-            else poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+            if (slot % 2 == 0) poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+            else poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
         }
         else {
-            if (slot % 2 == 0) poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
-            else poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            if (slot % 2 == 0) poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+            else poseStack.mulPose(Vector3f.YP.rotationDegrees(90.0F));
         }
     }
 }

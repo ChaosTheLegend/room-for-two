@@ -19,7 +19,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "startSleeping", at = @At("TAIL"))
     private void roomfortwo$onStartSleeping(BlockPos pos, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide() && self.level() instanceof ServerLevel serverLevel) {
+        if (!self.level.isClientSide() && self.level instanceof ServerLevel serverLevel) {
             BedOccupancyTracker.updateBedOccupancy(serverLevel, pos, -1);
         }
     }
@@ -27,7 +27,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "stopSleeping", at = @At("HEAD"))
     private void roomfortwo$onStopSleeping(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide() && self.level() instanceof ServerLevel serverLevel) {
+        if (!self.level.isClientSide() && self.level instanceof ServerLevel serverLevel) {
             getSleepingPos().ifPresent(pos -> BedOccupancyTracker.updateBedOccupancy(serverLevel, pos, self.getId()));
         }
     }
